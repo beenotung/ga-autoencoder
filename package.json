@@ -1,0 +1,31 @@
+{
+  "name": "ga-autoencoder",
+  "version": "0.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "snowpack dev",
+    "test": "tsc --noEmit",
+    "build": "tsc -p ."
+  },
+  "files": [
+    "dist"
+  ],
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@softnami/autoencoder": "^1.0.1",
+    "brain.js": "^2.0.0-beta.15",
+    "ga-island": "^3.0.0",
+    "gpu.js": "^2.15.2",
+    "mathjs": "^6.2.5"
+  },
+  "devDependencies": {
+    "@types/node": "^17.0.42",
+    "snowpack": "^3.8.8",
+    "ts-node": "^10.8.1",
+    "ts-node-dev": "^1.1.8",
+    "typescript": "^4.7.3"
+  }
+}
