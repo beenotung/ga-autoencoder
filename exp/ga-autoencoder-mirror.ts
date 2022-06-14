@@ -24,7 +24,7 @@ let ga = new GaIsland<Gene>({
   populationSize: 16,
   mutationRate: 20,
   crossover(aParent, bParent, child) {
-    for (let i = 0; i < 4; i++) {
+    for (let i = 0; i < 2; i++) {
       child.w[i] = random() < 0.5 ? aParent.w[i] : bParent.w[i]
     }
     for (let i = 0; i < 3; i++) {
@@ -32,7 +32,7 @@ let ga = new GaIsland<Gene>({
     }
   },
   mutate(input, output) {
-    for (let i = 0; i < 4; i++) {
+    for (let i = 0; i < 2; i++) {
       output.w[i] =
         input.w[i] + (random() < mutate_rate ? (random() * 2 - 1) * 0.25 : 0)
     }
@@ -50,7 +50,7 @@ let ga = new GaIsland<Gene>({
   },
   randomIndividual() {
     return {
-      w: [random(), random(), random(), random()],
+      w: [random(), random()],
       b: [random(), random(), random()],
       y: [0, 0, 0],
     }
@@ -62,8 +62,8 @@ function run(gene: Gene) {
   let b = gene.b
   let y = gene.y
   let value = sigmoid(input[0] * w[0] + input[1] * w[1] + b[0])
-  y[0] = sigmoid(value * w[2] + b[1])
-  y[1] = sigmoid(value * w[3] + b[2])
+  y[0] = sigmoid(value * w[0] + b[1])
+  y[1] = sigmoid(value * w[1] + b[2])
 }
 
 Object.assign(window, { ga, run, best })
