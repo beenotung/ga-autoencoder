@@ -1,10 +1,16 @@
 import { expect } from 'chai'
 import { tanh } from './math'
-import { decode, encode, Net, randomNet, runNet } from './nn'
+import {
+  mirrorDecode,
+  mirrorEncode,
+  MirrorNet,
+  randomMirrorNet,
+  runMirrorNet,
+} from './nn'
 
 describe('randomNet()', () => {
   it('should return half network', () => {
-    let net = randomNet({ layers: [2, 3] })
+    let net = randomMirrorNet({ layers: [2, 3] })
     expect(net.w).lengthOf(2 * 3, 'number of weight should be 2 x 3')
     expect(net.b).lengthOf(2 + 3, 'number of bias should be 2 + 3')
     expect(net.o).lengthOf(2, 'number of output layer should be 2')
@@ -14,7 +20,7 @@ describe('randomNet()', () => {
 })
 
 describe('runNet()', () => {
-  let net: Net
+  let net: MirrorNet
   let inputs: number[]
 
   before(() => {
@@ -29,7 +35,7 @@ describe('runNet()', () => {
   })
 
   it('should be accurate', () => {
-    let outputs = runNet(net, inputs)
+    let outputs = runMirrorNet(net, inputs)
 
     let h0 = tanh(inputs[0] * net.w[0] + inputs[1] * net.w[1] + net.b[2])
     let h1 = tanh(inputs[0] * net.w[2] + inputs[1] * net.w[3] + net.b[3])
@@ -46,6 +52,8 @@ describe('runNet()', () => {
   })
 
   it('should be equal to decode(encode(input))', () => {
-    expect(runNet(net, inputs)).deep.equals(decode(net, encode(net, inputs)))
+    expect(runMirrorNet(net, inputs)).deep.equals(
+      mirrorDecode(net, mirrorEncode(net, inputs))
+    )
   })
 })

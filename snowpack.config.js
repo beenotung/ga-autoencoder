@@ -5,7 +5,7 @@
 module.exports = {
   mount: {
     /* ... */
-    'exp': '/'
+    exp: '/',
   },
   plugins: [
     /* ... */
@@ -19,4 +19,4 @@ module.exports = {
   buildOptions: {
     /* ... */
   },
-};
+}

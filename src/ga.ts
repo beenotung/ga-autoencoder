@@ -1,17 +1,17 @@
 import { GaIsland } from 'ga-island'
-import { Net, NetSpec, randomNet, runNet } from './nn'
+import { MirrorNet, MirrorNetSpec, randomMirrorNet, runMirrorNet } from './nn'
 
 const { random, sqrt } = Math
 
 export type GaSpec = {
-  netSpec: NetSpec
+  netSpec: MirrorNetSpec
 }
 
 export type Inputs = number[] | Float32Array
 
-export type TrainSpec = {
-  iteration?: number // default to 1
+export type GATrainSpec = {
   dataset: Array<Inputs>
+  iterations?: number // default to 1
 }
 
 export function createGaPool(spec: GaSpec) {
@@ -22,10 +22,10 @@ export function createGaPool(spec: GaSpec) {
   let dataset: Array<Inputs>
   let N = 0
 
-  const ga = new GaIsland<Net>({
+  const ga = new GaIsland<MirrorNet>({
     mutationRate: 0.2,
     populationSize: 16,
-    randomIndividual: () => randomNet(netSpec),
+    randomIndividual: () => randomMirrorNet(netSpec),
     crossover: (a, b, c) => {
       const aw = a.w
       const ab = a.b
@@ -67,7 +67,7 @@ export function createGaPool(spec: GaSpec) {
         bb[i] = ab[i] + (r < mutateAmount ? r * 2 - 1 : 0)
       }
     },
-    fitness: net => {
+    fitness: (net) => {
       let fitness = 0
       let acc = 0
       let i: number
@@ -77,7 +77,7 @@ export function createGaPool(spec: GaSpec) {
       let e: number
       for (i = 0; i < N; i++) {
         inputs = dataset[i]
-        outputs = runNet(net, inputs)
+        outputs = runMirrorNet(net, inputs)
         acc = 0
         for (dim = 0; dim < Dim; dim++) {
           e = inputs[dim] - outputs[dim]
@@ -92,9 +92,9 @@ export function createGaPool(spec: GaSpec) {
     dataset = ds
     N = dataset.length
   }
-  function train(options: TrainSpec) {
+  function train(options: GATrainSpec) {
     setDataset(options.dataset)
-    const iteration = options.iteration || 1
+    const iteration = options.iterations || 1
     let i: number
     for (i = 0; i < iteration; i++) {
       ga.evolve()

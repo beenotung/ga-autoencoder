@@ -11,13 +11,13 @@ export function randomBias() {
   return random() * 2 - 1
 }
 
-export type Net = {
+export type MirrorNet = {
   w: Float32Array
   b: Float32Array
   o: Float32Array[]
 }
 
-export type NetSpec = {
+export type MirrorNetSpec = {
   layers: number[]
 }
 
@@ -25,7 +25,7 @@ export type NetSpec = {
  * e.g. [2,3] -> [2x3] -> [2x3 | 3x2]
  * e.g. [8,4,2] -> [8x4,4x2] -> [8x4, 4x2 | 2x4, 4x8]
  * */
-export function randomNet(spec: NetSpec): Net {
+export function randomMirrorNet(spec: MirrorNetSpec): MirrorNet {
   const w: number[] = []
   const b: number[] = []
   const o: Float32Array[] = []
@@ -64,9 +64,9 @@ export function randomNet(spec: NetSpec): Net {
   }
 }
 
-export function runNet(
-  net: Net,
-  inputs: number[] | Float32Array,
+export function runMirrorNet(
+  net: MirrorNet,
+  inputs: number[] | Float32Array
 ): Float32Array {
   const { w, b, o } = net
   const L = o.length
@@ -132,9 +132,9 @@ export function runNet(
   return inputs as Float32Array
 }
 
-export function encode(
-  net: Net,
-  inputs: number[] | Float32Array,
+export function mirrorEncode(
+  net: MirrorNet,
+  inputs: number[] | Float32Array
 ): Float32Array {
   const { w, b, o } = net
   const L = o.length
@@ -172,9 +172,9 @@ export function encode(
 
   return inputs as Float32Array
 }
-export function decode(
-  net: Net,
-  inputs: number[] | Float32Array,
+export function mirrorDecode(
+  net: MirrorNet,
+  inputs: number[] | Float32Array
 ): Float32Array {
   const { w, b, o } = net
   const L = o.length

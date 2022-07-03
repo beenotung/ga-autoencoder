@@ -2,11 +2,18 @@
   "name": "ga-autoencoder",
   "version": "0.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "scripts": {
+    "clean": "rimraf dist",
+    "format": "prettier --write .",
+    "gen-index": "gen-index",
     "start": "snowpack dev",
-    "test": "tsc --noEmit",
-    "build": "tsc -p ."
+    "test": "npm run type-check && npm run mocha",
+    "type-check": "tsc --noEmit",
+    "mocha": "ts-mocha \"src/*.spec.ts\"",
+    "tsc": "tsc -p tsconfig.dist.json",
+    "build": "npm run clean && npm run tsc"
   },
   "files": [
     "dist"
@@ -20,11 +27,15 @@
     "gpu.js": "^2.15.2"
   },
   "devDependencies": {
+    "@beenotung/gen-index": "^1.2.1",
     "@types/chai": "^4.3.1",
     "@types/mocha": "^9.1.1",
     "@types/node": "^17.0.45",
     "chai": "^4.3.6",
+    "esbuild": "^0.14.48",
     "mocha": "^10.0.0",
+    "prettier": "^2.7.1",
+    "rimraf": "^3.0.2",
     "snowpack": "^3.8.8",
     "ts-mocha": "^10.0.0",
     "ts-node": "^10.8.2",

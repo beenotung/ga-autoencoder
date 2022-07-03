@@ -1,5 +1,4 @@
 import brain from 'brain.js'
-const { sqrt, round, floor, ceil, random, min, max } = Math
 
 let net = new brain.NeuralNetwork({
   inputSize: 2,
