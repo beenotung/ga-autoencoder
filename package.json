@@ -1,9 +1,24 @@
 {
   "name": "ga-autoencoder",
   "version": "0.0.0",
-  "description": "",
+  "description": "Library to build and run auto-encoder neural network powered by genetic algorithm or GPU.",
+  "keywords": [],
+  "author": "Beeno Tung <aabbcc1241@yahoo.com.hk> (https://beeno-tung.surge.sh)",
+  "license": "BSD-2-Clause",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/beenotung/ga-autoencoder.git"
+  },
+  "homepage": "https://github.com/beenotung/ga-autoencoder#readme",
+  "bugs": {
+    "url": "https://github.com/beenotung/ga-autoencoder/issues"
+  },
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "files": [
+    "dist/*.d.ts",
+    "dist/*.js"
+  ],
   "scripts": {
     "clean": "rimraf dist",
     "format": "prettier --write .",
@@ -15,12 +30,6 @@
     "tsc": "tsc -p tsconfig.dist.json",
     "build": "npm run clean && npm run tsc"
   },
-  "files": [
-    "dist"
-  ],
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
   "dependencies": {
     "brain.js": "^2.0.0-beta.15",
     "ga-island": "^3.0.0",
