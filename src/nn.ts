@@ -64,7 +64,10 @@ export function randomNet(spec: NetSpec): Net {
   }
 }
 
-export function runNet(net: Net, inputs: number[] | Float32Array) {
+export function runNet(
+  net: Net,
+  inputs: number[] | Float32Array,
+): Float32Array {
   const { w, b, o } = net
   const L = o.length
   let inputSize = inputs.length
@@ -126,6 +129,89 @@ export function runNet(net: Net, inputs: number[] | Float32Array) {
     inputs = outputs
   }
 
-  return inputs
+  return inputs as Float32Array
 }
 
+export function encode(
+  net: Net,
+  inputs: number[] | Float32Array,
+): Float32Array {
+  const { w, b, o } = net
+  const L = o.length
+  let inputSize = inputs.length
+  let outputSize: number
+  let outputs: Float32Array
+  let l: number
+  let y: number
+  let x: number
+  let wi = 0
+  let bi = inputSize
+  let acc: number
+
+  /* encode */
+  for (l = 1; l < L; l++) {
+    /* init */
+    outputs = o[l]
+    outputSize = outputs.length
+    /* calc */
+    for (y = 0; y < outputSize; y++) {
+      /* calc sum of x*w */
+      acc = 0
+      for (x = 0; x < inputSize; x++) {
+        acc += inputs[x] * w[wi]
+        wi++
+      }
+      /* add bias, then run activation */
+      outputs[y] = tanh(acc + b[bi])
+      bi++
+    }
+    /* pass to next iteration */
+    inputSize = outputSize
+    inputs = outputs
+  }
+
+  return inputs as Float32Array
+}
+export function decode(
+  net: Net,
+  inputs: number[] | Float32Array,
+): Float32Array {
+  const { w, b, o } = net
+  const L = o.length
+  let inputSize = inputs.length
+  let outputSize: number
+  let outputs: Float32Array
+  let l: number
+  let y: number
+  let x: number
+  let wi = w.length
+  let bi = b.length - o[L - 1].length
+
+  /* decode */
+  for (l = L - 2; l >= 0; l--) {
+    /* init */
+    outputs = o[l]
+    outputSize = outputs.length
+    for (y = outputSize - 1; y >= 0; y--) {
+      outputs[y] = 0
+    }
+    /* calc */
+    for (x = inputSize - 1; x >= 0; x--) {
+      /* calc sum of x*w */
+      for (y = outputSize - 1; y >= 0; y--) {
+        wi--
+        outputs[y] += inputs[x] * w[wi]
+      }
+    }
+    /* add bias, then run activation */
+    for (y = outputSize - 1; y >= 0; y--) {
+      bi--
+      outputs[y] = tanh(outputs[y] + b[bi])
+    }
+    /* pass to next iteration */
+    inputSize = outputSize
+    inputs = outputs
+  }
+
+  return inputs as Float32Array
+}

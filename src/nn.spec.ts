@@ -1,6 +1,6 @@
 import { expect } from 'chai'
 import { tanh } from './math'
-import { Net, randomNet, runNet } from './nn'
+import { decode, encode, Net, randomNet, runNet } from './nn'
 
 describe('randomNet()', () => {
   it('should return half network', () => {
@@ -14,15 +14,21 @@ describe('randomNet()', () => {
 })
 
 describe('runNet()', () => {
-  it('should be accurate', () => {
+  let net: Net
+  let inputs: number[]
+
+  before(() => {
     /* [2,3] -> [2x3 | 3x2] */
-    let net: Net = {
+    net = {
       w: new Float32Array([0.8, -0.8, 0.6, -0.6, 0.4, -0.4]),
       b: new Float32Array([0.8, 0.4, 0.0, -0.4, -0.8]),
       o: [new Float32Array([0, 0]), new Float32Array([0, 0, 0])],
     }
 
-    let inputs = [0.4, -0.8]
+    inputs = [0.4, -0.8]
+  })
+
+  it('should be accurate', () => {
     let outputs = runNet(net, inputs)
 
     let h0 = tanh(inputs[0] * net.w[0] + inputs[1] * net.w[1] + net.b[2])
@@ -37,5 +43,9 @@ describe('runNet()', () => {
     let margin = 1e-7
     expect(outputs[0]).closeTo(ys[0], margin)
     expect(outputs[1]).closeTo(ys[1], margin)
+  })
+
+  it('should be equal to decode(encode(input))', () => {
+    expect(runNet(net, inputs)).deep.equals(decode(net, encode(net, inputs)))
   })
 })
