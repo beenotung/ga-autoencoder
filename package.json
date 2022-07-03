@@ -1,6 +1,6 @@
 {
   "name": "ga-autoencoder",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "Library to build and run auto-encoder neural network powered by genetic algorithm or GPU.",
   "keywords": [
     "autoencoder",
