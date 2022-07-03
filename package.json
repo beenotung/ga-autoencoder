@@ -2,7 +2,15 @@
   "name": "ga-autoencoder",
   "version": "0.0.0",
   "description": "Library to build and run auto-encoder neural network powered by genetic algorithm or GPU.",
-  "keywords": [],
+  "keywords": [
+    "autoencoder",
+    "neural",
+    "network",
+    "genetic",
+    "algorithm",
+    "brain.js",
+    "gpu"
+  ],
   "author": "Beeno Tung <aabbcc1241@yahoo.com.hk> (https://beeno-tung.surge.sh)",
   "license": "BSD-2-Clause",
   "repository": {
