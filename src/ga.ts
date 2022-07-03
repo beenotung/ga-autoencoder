@@ -18,6 +18,7 @@ export function createGaPool(spec: GaSpec) {
   const { netSpec } = spec
   const Dim = netSpec.layers[0]
   const mutateAmount = 0.25
+  const halfMutateAmount = mutateAmount / 2
 
   let dataset: Array<Inputs>
   let N = 0
@@ -60,11 +61,11 @@ export function createGaPool(spec: GaSpec) {
       let r: number
       for (i = 0; i < W; i++) {
         r = random()
-        bw[i] = aw[i] + (r < mutateAmount ? r * 2 - 1 : 0)
+        bw[i] = aw[i] + (r < mutateAmount ? (r - halfMutateAmount) * 2 : 0)
       }
       for (i = 0; i < B; i++) {
         r = random()
-        bb[i] = ab[i] + (r < mutateAmount ? r * 2 - 1 : 0)
+        bb[i] = ab[i] + (r < mutateAmount ? (r - halfMutateAmount) * 2 : 0)
       }
     },
     fitness: (net) => {

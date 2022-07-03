@@ -31,7 +31,7 @@ describe('run training on sample', () => {
     const pool = createGaPool({
       netSpec: { layers: [2, 3] },
     })
-    pool.train({ dataset, iterations: 10000 })
+    pool.train({ dataset, iterations: 10_000 })
     const ga = pool.ga
     let net = best(ga.options).gene
     for (let input of dataset) {
@@ -42,7 +42,7 @@ describe('run training on sample', () => {
       expect(mid).lengthOf(3)
       expect(output).lengthOf(2)
 
-      let margin = 0.5
+      let margin = 0.4
       expect(input[0]).closeTo(output[0], margin)
       expect(input[1]).closeTo(output[1], margin)
 
