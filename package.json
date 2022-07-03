@@ -15,11 +15,9 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@softnami/autoencoder": "^1.0.1",
     "brain.js": "^2.0.0-beta.15",
     "ga-island": "^3.0.0",
     "gpu.js": "^2.15.2",
-    "mathjs": "^6.2.5"
   },
   "devDependencies": {
     "@types/node": "^17.0.42",
