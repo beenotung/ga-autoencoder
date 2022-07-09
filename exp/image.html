@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>image encoder</title>
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+      }
+
+      #allrgb {
+        width: 100vw;
+        height: 100vh;
+        image-rendering: pixelated;
+      }
+      #load-image {
+        position: absolute;
+        top: 0;
+        left: 0;
+      }
+    </style>
+  </head>
+
+  <body>
+    <canvas id="allrgb"></canvas>
+    <button id='load-image'>load image</button>
+    <script type="module" src="image.js"></script>
+    <noscript id="noscript">javascript is required</noscript>
+    <script>
+      document.getElementById('noscript').remove()
+    </script>
+  </body>
+</html>

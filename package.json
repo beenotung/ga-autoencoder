@@ -45,6 +45,7 @@
   },
   "devDependencies": {
     "@beenotung/gen-index": "^1.2.1",
+    "@beenotung/tslib": "^20.1.2",
     "@types/chai": "^4.3.1",
     "@types/mocha": "^9.1.1",
     "@types/node": "^17.0.45",
