@@ -72,7 +72,7 @@ canvas.onclick = () => {
   running = !running
   statusButton.textContent = 'running: ' + running
   if (running) {
-    requestAnimationFrame(loop)
+    setTimeout(loop)
   }
 }
 statusButton.onclick = canvas.onclick
