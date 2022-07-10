@@ -25,14 +25,16 @@ const acticationButton = querySelector<HTMLButtonElement>('#activation-fn')
 const statusButton = querySelector<HTMLButtonElement>('#running-status')
 const inputSizeSpan = querySelector('#input-size')
 const hiddenLayersInput = querySelector<HTMLInputElement>('#hidden-layers')
-const rect = canvas.getBoundingClientRect()
-const w = floor(rect.width / scale)
-const h = floor(rect.height / scale)
+let rect = canvas.getBoundingClientRect()
+let w = floor(rect.width / scale)
+let h = floor(rect.height / scale)
 canvas.width = w
 canvas.height = h
 console.log({ w, h })
 const context = canvas.getContext('2d')!
-const imageData = context.createImageData(w, h)
+let imageData = context.createImageData(w, h)
+
+let trainImage: HTMLImageElement | undefined
 
 let activation = 'sigmoid'
 let learningRate = 0.3
@@ -145,25 +147,36 @@ async function loadImage() {
   let file = files[0]
   if (!file) return
   let dataUrl = await compressMobilePhoto({ image: file })
-  if (!'dev') {
-    let image = await base64ToImage(dataUrl)
-    context.drawImage(image, 0, 0, w, h)
-  } else {
-    let canvas = await base64ToCanvas(dataUrl)
-    let context = canvas.getContext('2d')!
-    let { width, height } = canvas
-    let imageData = context.getImageData(0, 0, width, height)
-    for (let y = 0, i = 0; y < h; y += step) {
-      for (let x = 0; x < w; x += step, i++) {
-        let o = (floor((y / h) * height) * width + floor((x / w) * width)) * 4
-        encoderDataset[i] = {
-          input: expandInput(x, y),
-          output: encodeOutput(
-            imageData.data[o + 0],
-            imageData.data[o + 1],
-            imageData.data[o + 2],
-          ),
-        }
+  trainImage = await base64ToImage(dataUrl)
+  loadDataset(trainImage)
+}
+
+window.addEventListener('resize', () => {
+  rect = canvas.getBoundingClientRect()
+  w = floor(rect.width / scale)
+  h = floor(rect.height / scale)
+  canvas.width = w
+  canvas.height = h
+  imageData = context.createImageData(w, h)
+  console.log({ w, h })
+  if (trainImage) {
+    loadDataset(trainImage)
+  }
+})
+
+function loadDataset(trainImage: HTMLImageElement) {
+  context.drawImage(trainImage, 0, 0, w, h)
+  let trainImageData = context.getImageData(0, 0, w, h)
+  for (let y = 0, i = 0; y < h; y += step) {
+    for (let x = 0; x < w; x += step, i++) {
+      let o = (y * w + x) * 4
+      encoderDataset[i] = {
+        input: expandInput(x, y),
+        output: encodeOutput(
+          trainImageData.data[o + 0],
+          trainImageData.data[o + 1],
+          trainImageData.data[o + 2],
+        ),
       }
     }
   }
