@@ -17,6 +17,7 @@ let A = 3
 
 let scale = 5
 let step = 3
+let zoomRate = 1
 
 const canvas = querySelector<HTMLCanvasElement>('canvas#allrgb')
 const loadImageButton = querySelector<HTMLButtonElement>('#load-image')
@@ -102,6 +103,7 @@ calcInputWidth()
 function expandInput(x: number, y: number) {
   let output: number[] = []
   for (let i of [(x / w) * 2 - 1, (y / h) * 2 - 1]) {
+    i *= zoomRate
     for (let x of [i, i ** 2, i ** 3, i ** 4]) {
       output.push(x, sin(x), cos(x), tan(x))
     }
@@ -167,7 +169,24 @@ async function loadImage() {
   }
 }
 
-Object.assign(window, { encoder, loadImage, imageData, expandInput })
+function setZoomRate(_zoomRate?: number) {
+  if (!_zoomRate) {
+    return zoomRate
+  }
+  zoomRate = _zoomRate
+  if (json) {
+    running = true
+    loop()
+  }
+}
+
+Object.assign(window, {
+  encoder,
+  loadImage,
+  imageData,
+  expandInput,
+  zoomRate: setZoomRate,
+})
 
 let gen = 0
 
