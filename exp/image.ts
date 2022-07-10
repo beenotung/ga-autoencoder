@@ -53,14 +53,18 @@ if (!hiddenLayersInput.value) {
   hiddenLayersInput.value = hiddenLayers
 }
 
-let encoder = new brain.NeuralNetwork({
-  inputSize,
-  hiddenLayers: hiddenLayers.split(',').map(s => parseInt(s)),
-  outputSize,
-  iterations: 10,
-  activation,
-  learningRate,
-})
+function newEncoder() {
+  return new brain.NeuralNetwork({
+    inputSize,
+    hiddenLayers: hiddenLayers.split(',').map(s => parseInt(s)),
+    outputSize,
+    iterations: 10,
+    activation,
+    learningRate,
+  })
+}
+
+let encoder = newEncoder()
 let json: INeuralNetworkJSON | null = encoder.toJSON()
 json = null
 if (json) {
@@ -87,14 +91,7 @@ acticationButton.onclick = () => {
     '?activation=' + (activation === 'tanh' ? 'sigmoid' : 'tanh')
 }
 hiddenLayersInput.onchange = () => {
-  encoder = new brain.NeuralNetwork({
-    inputSize,
-    hiddenLayers: hiddenLayers.split(',').map(s => parseInt(s)),
-    outputSize,
-    iterations: 10,
-    activation,
-    learningRate,
-  })
+  encoder = newEncoder()
 }
 function calcInputWidth() {
   hiddenLayersInput.style.width = hiddenLayersInput.value.length + 1 + 'ch'
