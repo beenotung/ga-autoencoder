@@ -148,9 +148,11 @@ async function loadImage() {
   if (!file) return
   let dataUrl = await compressMobilePhoto({ image: file })
   trainImage = await base64ToImage(dataUrl)
-  loadDataset(trainImage)
+  context.drawImage(trainImage, 0, 0, w, h)
+  loadDataset()
 }
 
+let resizeTimer: any
 window.addEventListener('resize', () => {
   rect = canvas.getBoundingClientRect()
   w = floor(rect.width / scale)
@@ -158,15 +160,19 @@ window.addEventListener('resize', () => {
   canvas.width = w
   canvas.height = h
   imageData = context.createImageData(w, h)
-  console.log({ w, h })
   if (trainImage) {
-    loadDataset(trainImage)
+    context.drawImage(trainImage, 0, 0, w, h)
+    clearTimeout(resizeTimer)
+    resizeTimer = setTimeout(() => {
+      console.log({ w, h })
+      loadDataset()
+    }, 300)
   }
 })
 
-function loadDataset(trainImage: HTMLImageElement) {
-  context.drawImage(trainImage, 0, 0, w, h)
+function loadDataset() {
   let trainImageData = context.getImageData(0, 0, w, h)
+  encoderDataset.length = 0
   for (let y = 0, i = 0; y < h; y += step) {
     for (let x = 0; x < w; x += step, i++) {
       let o = (y * w + x) * 4
