@@ -1,7 +1,7 @@
 import { best, GaIsland } from 'ga-island'
 import brain from 'brain.js'
 import { selectImage } from '@beenotung/tslib/file'
-import type { INeuralNetworkJSON } from 'brain.js/dist/src/neural-network';
+import type { INeuralNetworkJSON } from 'brain.js/dist/src/neural-network'
 import {
   base64ToCanvas,
   base64ToImage,
@@ -18,9 +18,12 @@ let A = 3
 let scale = 5
 let step = 3
 
-const canvas: HTMLCanvasElement = document.querySelector('canvas#allrgb')!
-const loadImageButton: HTMLButtonElement =
-  document.querySelector('#load-image')!
+const canvas = querySelector<HTMLCanvasElement>('canvas#allrgb')
+const loadImageButton = querySelector<HTMLButtonElement>('#load-image')
+const acticationButton = querySelector<HTMLButtonElement>('#activation-fn')
+const statusButton = querySelector<HTMLButtonElement>('#running-status')
+const inputSizeSpan = querySelector('#input-size')
+const hiddenLayersInput = querySelector<HTMLInputElement>('#hidden-layers')
 const rect = canvas.getBoundingClientRect()
 const w = floor(rect.width / scale)
 const h = floor(rect.height / scale)
@@ -38,10 +41,19 @@ if (location.search === '?activation=tanh') {
   learningRate = 0.01
 }
 
-const encoder = new brain.NeuralNetwork({
-  inputSize: expandInput(0, 0).length,
-  hiddenLayers: [64, 9],
-  outputSize: 3,
+const inputSize = expandInput(0, 0).length
+const hiddenLayers = hiddenLayersInput.value || '64,9'
+const outputSize = 3
+
+inputSizeSpan.textContent = String(inputSize)
+if (!hiddenLayersInput.value) {
+  hiddenLayersInput.value = hiddenLayers
+}
+
+let encoder = new brain.NeuralNetwork({
+  inputSize,
+  hiddenLayers: hiddenLayers.split(',').map(s => parseInt(s)),
+  outputSize,
   iterations: 10,
   activation,
   learningRate,
@@ -52,15 +64,40 @@ if (json) {
   encoder.fromJSON(json)
 }
 
+let running = false
+
+statusButton.textContent = 'running: ' + running
 canvas.onclick = () => {
   running = !running
+  statusButton.textContent = 'running: ' + running
   if (running) {
     loop()
   }
 }
+statusButton.onclick = canvas.onclick
 loadImageButton.onclick = () => {
   loadImage()
 }
+acticationButton.textContent = activation
+acticationButton.onclick = () => {
+  location.search =
+    '?activation=' + (activation === 'tanh' ? 'sigmoid' : 'tanh')
+}
+hiddenLayersInput.onchange = () => {
+  encoder = new brain.NeuralNetwork({
+    inputSize,
+    hiddenLayers: hiddenLayers.split(',').map(s => parseInt(s)),
+    outputSize,
+    iterations: 10,
+    activation,
+    learningRate,
+  })
+}
+function calcInputWidth() {
+  hiddenLayersInput.style.width = hiddenLayersInput.value.length + 1 + 'ch'
+}
+hiddenLayersInput.oninput = calcInputWidth
+calcInputWidth()
 
 function expandInput(x: number, y: number) {
   let output: number[] = []
@@ -133,7 +170,6 @@ async function loadImage() {
 Object.assign(window, { encoder, loadImage, imageData, expandInput })
 
 let gen = 0
-let running = false
 
 let encoderDataset: {
   input: number[]
@@ -175,3 +211,9 @@ function loop() {
   requestAnimationFrame(loop)
 }
 loop()
+
+function querySelector<T extends HTMLElement>(selector: string) {
+  let e = document.querySelector(selector)
+  if (!e) throw new Error('Element not found, selector: ' + selector)
+  return e as T
+}
