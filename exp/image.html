@@ -20,9 +20,12 @@
         top: 0;
         left: 0;
       }
+      #layer-container {
+        color: #888;
+      }
       input#hidden-layers {
-        font-family: monospace;
-        font-size: 12px;
+        background-color: transparent;
+        color: #888;
       }
     </style>
   </head>
@@ -33,7 +36,7 @@
       <button id="load-image">load image</button>
       <button id="activation-fn"></button>
       <button id="running-status"></button>
-      <div>
+      <div id='layer-container'>
         x,y => <span id="input-size"></span> => <input id="hidden-layers" /> =>
         3
       </div>
